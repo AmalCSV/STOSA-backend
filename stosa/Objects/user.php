@@ -36,5 +36,63 @@ class User {
         return $stmt;
     }
 
+    public function read_single(){
+        //creating the query
+        $query = "SELECT
+        p.id,
+        p.username,
+        p.email,
+        p.password
+        FROM
+        " . $this->table . " p
+        WHERE
+        p.id = ?
+        LIMIT 0,1"; // ? - Bind parameter (placeholder)
+
+    //prepare the query statement
+    $stmt = $this->conn->prepare($query);
+    
+    //Bind parameter
+    $stmt->bindParam(1, $this->id); //1st parameter binded to this id.
+
+    //execute query
+    $stmt->execute();
+
+    $row =$stmt->fetch(PDO::FETCH_ASSOC);
+
+    //set values to object properties
+    $this->username = $row['username'];
+    $this->email = $row['email'];
+    $this->password= $row['password'];
+
+}
+
+public function create(){
+    $query = "INSERT INTO " . $this->table . "
+    SET
+    username = :username, 
+    email = :email,
+    password = :password"; // named parameters (to define these later)
+
+//prepare query
+$stmt = $this->conn->prepare($query);
+
+//sanitize data(clean up for security)
+$this->username = htmlspecialchars(strip_tags($this->username));
+$this->email = htmlspecialchars(strip_tags($this->email));
+$this->password = htmlspecialchars(strip_tags($this->password));
+
+//bind the data
+$stmt->bindparam(":username", $this->username);
+$stmt->bindparam(":email",$this->email);
+$stmt->bindparam(":password",$this->password);
+
+//Execute query
+if($stmt->execute()){
+    return true;
+}else{
+    return false;
+}
+}
 }
 ?>
