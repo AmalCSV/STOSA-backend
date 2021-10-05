@@ -23,7 +23,7 @@ $data = json_decode(file_get_contents("php://input"));
 //set member property values to data
 $member->firstName = $data->firstName;
 $member->lastName = $data->lastName;
-$member->firstName = $data->email;
+$member->email = $data->email;
 $member->addressLine = $data->addressLine;
 $member->city = $data->city;
 
