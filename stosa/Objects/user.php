@@ -94,5 +94,58 @@ if($stmt->execute()){
     return false;
 }
 }
+public function update(){
+    $query = "UPDATE " . $this->table . "
+   SET
+    username = :username, 
+    email = :email,
+    password = :password
+   WHERE
+    id = :id"; // named parameters (to define these later)
+
+//prepare query
+$stmt = $this->conn->prepare($query);
+
+//sanitize data(clean up for security)
+$this->username = htmlspecialchars(strip_tags($this->username));
+$this->email = htmlspecialchars(strip_tags($this->email));
+$this->password = htmlspecialchars(strip_tags($this->password));
+$this->id = htmlspecialchars(strip_tags($this->id));
+
+//bind the data
+$stmt->bindparam(":username", $this->username);
+$stmt->bindparam(":email",$this->email);
+$stmt->bindparam(":password",$this->password);
+$stmt->bindparam(":id",$this->id);
+
+//Execute query
+if($stmt->execute()){
+    return true;
+}else{
+    return false;
+}
+
+}
+
+Public function delete(){
+    //create query
+    $query = "DELETE FROM " . $this->table . " WHERE id=:id";
+
+    //prepare query
+    $stmt = $this->conn->prepare($query);
+
+    //sanitize
+    $this->id = htmlspecialchars(strip_tags($this->id));
+
+    //bind
+    $stmt->bindparam(":id",$this->id);
+
+    //Execute query
+if($stmt->execute()){
+    return true;
+}else{
+    return false;
+}
+}
 }
 ?>
