@@ -109,5 +109,65 @@ class Member {
         return false;
     }
 
+    public function update(){
+        //set query
+        $query = "UPDATE " . $this->table . "
+        SET
+        firstName = :firstName,
+        lastName = :lastName,
+        email = :email,
+        addressLine = :addressLine,
+        city = :city
+        WHERE
+        id = :id";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //sanitize the data
+        $this->firstName = htmlspecialchars(strip_tags($this->firstName));
+        $this->lastName = htmlspecialchars(strip_tags($this->lastName));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->addressLine = htmlspecialchars(strip_tags($this->addressLine));
+        $this->city = htmlspecialchars(strip_tags($this->city));
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        //bind the data
+        $stmt->bindparam(":firstName", $this->firstName);
+        $stmt->bindparam(":lastName", $this->lastName);
+        $stmt->bindparam(":email", $this->email);
+        $stmt->bindparam(":addressLine", $this->addressLine);
+        $stmt->bindparam(":city", $this->city);
+        $stmt->bindparam(":id",$this->id);
+
+//Execute query
+if($stmt->execute()){
+    return true;
+}else{
+    return false;
+}
+    }
+
+    public function delete(){
+        //create query
+        $query = "DELETE FROM " . $this->table . "
+        WHERE
+        id=:id";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //clean the data
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        //bind the id
+        $stmt->bindparam(":id",$this->id);
+
+        //execute query
+        if($stmt->execute()){
+            return true;
+        }
+        return false;
+    }
 
 }
