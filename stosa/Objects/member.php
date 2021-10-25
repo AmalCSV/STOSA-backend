@@ -169,5 +169,32 @@ if($stmt->execute()){
         }
         return false;
     }
+    public function updateOne($key, $field, $value)
+    {
+        //set query
+        $query = "UPDATE " . $this->table . "
+        SET
+        :field = :value,
+        WHERE
+        id = :id";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        //sanitize the data
+        //$this->id = htmlspecialchars(strip_tags($this->id));
+
+        //bind the data
+        $stmt->bindparam(":field", $field);
+        $stmt->bindparam(":value", $value);
+        $stmt->bindparam(":id", $key);
+
+        //Execute query
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }
