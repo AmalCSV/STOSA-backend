@@ -8,6 +8,7 @@ class User {
     public $username;
     public $email;
     public $password;
+    public $member_id;
 
     //Constructor with the database
     public function __construct($db){
@@ -21,11 +22,15 @@ class User {
         p.id,         
         p.username,
         p.email,
-        p.password
+        p.password,
+        p.member_id
         FROM
         " . $this->table . " p
+        LEFT JOIN
+        member m
+        ON member_id = m.id 
         ORDER BY
-        p.id DESC";
+            p.id DESC";
 
         //prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -127,7 +132,7 @@ if($stmt->execute()){
 
 }
 
-Public function delete(){
+public function delete(){
     //create query
     $query = "DELETE FROM " . $this->table . " WHERE id=:id";
 
@@ -146,6 +151,31 @@ if($stmt->execute()){
 }else{
     return false;
 }
+}
+
+public function login (){
+//Select all query
+$query = "SELECT 
+`id`,
+`username`,
+`email`,
+`password`,
+`member_id`
+FROM
+" . $this->table . " 
+WHERE
+username ='".$this->username."'
+AND
+password ='".$this->password."'";
+
+//prepare query
+$stmt = $this->conn->prepare($query);
+
+//execute query
+$stmt->execute();
+
+return $stmt;
+
 }
 }
 ?>
